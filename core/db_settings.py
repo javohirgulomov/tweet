@@ -1,15 +1,21 @@
+from typing import Optional, Union, Any
+
 import psycopg2
-from psycopg2.extras import DictCursor
+from psycopg2.extras import DictCursor, DictRow
 
 from core.config import DB_CONFIG
 
 
 class DatabaseManager:
-    def __init__(self):
-        self.conn = None
-        self.cursor = None
+    """
+    Database manager class to execute all queries
+    """
 
-    def __enter__(self):
+    def __init__(self):
+        self.conn: Optional[psycopg2.extensions.connection] = None
+        self.cursor: Optional[psycopg2.extensions.cursor] = None
+
+    def __enter__(self) -> "DatabaseManager":
         self.conn = psycopg2.connect(**DB_CONFIG)
         self.cursor = self.conn.cursor(cursor_factory=DictCursor)
         return self
@@ -26,19 +32,23 @@ class DatabaseManager:
         if self.cursor:
             self.cursor.close()
 
-    def execute(self, query, params):
+    def execute(self, query: str, params: Union[tuple, dict, None] = None):
         self.cursor.execute(query, params)
 
-    def fetchone(self, query, params):
+    def fetchone(self, query: str, params: Union[tuple, dict, None] = None) -> Optional[DictRow]:
         self.cursor.execute(query, params)
         return self.cursor.fetchone()
 
-    def fetchall(self, query, params):
+    def fetchall(self, query: str, params: Union[tuple, dict, None] = None) -> list[tuple[Any, ...]]:
         self.cursor.execute(query, params)
         return self.cursor.fetchall()
 
 
-def execute_query(query, params=None, fetch=None):
+def execute_query(
+        query: str,
+        params: Union[tuple, dict, None] = None,
+        fetch: Union[str, None] = None
+) -> DictRow | None | list[tuple[Any, ...]] | bool:
     try:
         with DatabaseManager() as db:
             if fetch == "one":

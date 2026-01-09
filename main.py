@@ -9,7 +9,7 @@ from tweets import crud, likes
 def show_auth_menu():
     """
     Main menu page
-    :return:
+    :return: None
     """
     print(menus.auth_menu)
     option = input("Enter your option: ")
@@ -34,15 +34,15 @@ def show_auth_menu():
     return show_auth_menu()
 
 
-def show_all_tweets_menu(user, page=0, sort_by_likes=False):
+def show_all_tweets_menu(user: dict, page: int=0, sort_by_likes: bool=False):
     """
     All tweets and functions menu
-    :param user:
-    :param page:
-    :param sort_by_likes:
+    :param user:dict containing user info
+    :param page: int for pagination
+    :param sort by likes: bool to sort
     :return:
     """
-    # sort_by_likes function
+    # sort by likes function
     crud.print_feed(user, page, order_by_likes=sort_by_likes)
 
     print(menus.all_tweets_menu)
@@ -80,10 +80,10 @@ def show_all_tweets_menu(user, page=0, sort_by_likes=False):
         return show_all_tweets_menu(user, page, sort_by_likes)
 
 
-def show_my_tweets_menu(user):
+def show_my_tweets_menu(user: dict):
     """
     User tweets section
-    :param user:
+    :param user: dict user info
     :return: tweets
     """
 
@@ -111,10 +111,10 @@ def show_my_tweets_menu(user):
         return show_my_tweets_menu(user)
 
 
-def show_main_menu(user):
+def show_main_menu(user: dict):
     """
     Heart of the program. Main menu
-    :param user:
+    :param user: dict user info
     :return: funtions
     """
     print(menus.main_menu)

@@ -3,11 +3,11 @@ from core.db_settings import execute_query
 page_size = 5
 
 
-def add_new_tweet(user):
+def add_new_tweet(user: dict) -> None:
     """
     New tweet adding function
-    :param user:
-    :return:
+    :param user: dict user info
+    :return: None
     """
     content = input("Write tweet here: ")
 
@@ -16,12 +16,12 @@ def add_new_tweet(user):
     print("Tweet posted!")
 
 
-def print_feed(user, page=0, order_by_likes=False):
+def print_feed(user: dict, page: int=0, order_by_likes: bool=False) -> None:
     """
     Function to print all tweets
-    :param user:
-    :param page:
-    :param order_by_likes:
+    :param user: dict user info
+    :param page: int for pagination
+    :param order_by_likes: bool for sorting by likes
     :return:
     """
     skip_amount = page * page_size
@@ -38,12 +38,12 @@ def print_feed(user, page=0, order_by_likes=False):
 
     print(f" {feed_title} - Page {page + 1} ")
 
-    # 2. Group by to count likes. Limit and Offset to make page 1, page 2 ...
+    # 2. Group by to count likes. Limit and Offset to make page 1, page 2 ... (pagination)
     query = f"""
         SELECT t.id, t.tweet, u.username, COUNT(l.id) as like_count
         FROM tweets t
         JOIN users u ON t.user_id = u.id
-        JOIN likes l ON t.id = l.tweet_id
+        LEFT JOIN likes l ON t.id = l.tweet_id
         GROUP BY t.id, u.username, t.created_at
         {sql_order}
         LIMIT %s OFFSET %s
@@ -60,11 +60,11 @@ def print_feed(user, page=0, order_by_likes=False):
         print(f"    Likes: {t['like_count']}")
 
 
-def print_my_tweets(user):
+def print_my_tweets(user: dict) -> None:
     """
     Prints only user's tweets
-    :param user:
-    :return:
+    :param user: dict user info
+    :return: None
     """
 
     query = "SELECT * FROM tweets WHERE user_id = %s ORDER BY created_at DESC"
@@ -77,12 +77,12 @@ def print_my_tweets(user):
         for t in tweets:
             print(f"[{t['id']}] {t['tweet']}")
 
-def delete_tweet(user, tweet_id):
+def delete_tweet(user: dict, tweet_id: int) -> None:
     """
     Deleting function to delete the tweet by their id
-    :param user:
-    :param tweet_id:
-    :return:
+    :param user: dict user info
+    :param tweet_id: int for tweet id
+    :return: None
     """
     # Check if the tweet belongs to the user
     check = "SELECT id FROM tweets WHERE id = %s AND user_id = %s"

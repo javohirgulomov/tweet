@@ -1,9 +1,9 @@
 from core.db_settings import execute_query
 
 
-def toggle_like(user, tweet_id):
+def toggle_like(user: dict, tweet_id: int) -> None:
     """
-    Handles liking and unliking a tweet.
+    Handles liking and unliking a tweet
     """
     # Is tweet exists ?
     if not execute_query("SELECT id FROM tweets WHERE id = %s", (tweet_id,), fetch="one"):
@@ -24,7 +24,7 @@ def toggle_like(user, tweet_id):
         print("Liked!")
 
 
-def show_liked_tweets(user):
+def show_liked_tweets(user: dict) -> None:
     """
     Shows tweets the user liked
     """
@@ -44,12 +44,12 @@ def show_liked_tweets(user):
         for t in tweets:
             print(f"{t['username']}: {t['tweet']}")
 
-def show_who_liked_tweet(user, tweet_id):
+def show_who_liked_tweet(user: dict, tweet_id: int) -> None:
     """
     Shows the list of users who liked that tweet
-    :param user:
-    :param tweet_id:
-    :return:
+    :param user: dict user info
+    :param tweet_id: int for tweet id
+    :return: None
     """
 
     #Is this your tweet?
